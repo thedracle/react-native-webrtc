@@ -346,6 +346,16 @@ RCT_EXPORT_METHOD(mediaStreamTrackRelease:(nonnull NSString *)streamID : (nonnul
 RCT_EXPORT_METHOD(mediaStreamTrackSetEnabled:(nonnull NSString *)trackID : (BOOL)enabled)
 {
   RTCMediaStreamTrack *track = self.localTracks[trackID];
+    if (!track) {
+        // Search through remote streams
+        for (RTCPeerConnection* peerConnection in self.peerConnections.allValues) {
+            RTCMediaStreamTrack* track = peerConnection.remoteTracks[trackID];
+            if (track && track.isEnabled != enabled) {
+                track.isEnabled = enabled;
+                break;
+            }
+        }
+    }
   if (track && track.isEnabled != enabled) {
     track.isEnabled = enabled;
   }
