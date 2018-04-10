@@ -196,6 +196,13 @@ export default class RTCPeerConnection extends EventTarget(PEER_CONNECTION_EVENT
             throw e;
           }
         }
+        // Append 'stat' function which can look up a stat with a particular value with a given id.
+        stats.forEach(function(stat) {
+          stat.stat = function(key) {
+            let r = stat && stat.values && stat.values.find((v) => {return v[key]});
+            return r?r[key]:null;
+          };
+        });
         return stats;
       });
     } else {
